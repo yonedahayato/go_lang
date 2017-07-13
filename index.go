@@ -1,25 +1,44 @@
 package main
 
 import (
-    "log"
+    "bytes"
+    "encoding/base64"
+    "image"
+    "image/jpeg"
+    "io"
     "net/http"
-    "time"
-    "html/template"
+    "os"
+    "text/template"
 )
 
-func clockHandler(w http.ResponseWriter, r *http.Request) {
-    t := template.Must(template.ParseFiles("/home/yoneda/github/go_lang/templates/clock.html.tpl"))
-    if err := t.ExecuteTemplate(w, "clock.html.tpl", time.Now()); err != nil {
-        log.Fatal(err)
+var templates = template.Must(template.ParseFiles("templates/index.html"))
+/* template.ParseFiles: 別ファイルに定義したテンプレートを読み込む */
+/* template.Must: バリデーションチェック */
+
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+    data := map[string]interface{}{"Title": "index"}
+    renderTemplate(w, "index", data)
+}
+
+func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
+    if err := templates.ExecuteTemplae(e, tmpl+".html", data); err != nil {
+        log.Fatalln("Unable to execute template")
     }
 }
 
-func main() {
-    http.HandleFunc("/clock/", clockHandler)
-    http.Handle("/static",
-        http.StripPrefix("/static/",
-            http.FileServer(http.Dir("/home/yoneda/github/go_lang"))))
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
-    log.Fatal(
-        http.ListenAndServe(":8081", nil))
+}
+
+func ShowHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func writeImageWithTemplate(w http.ResponseWriter, tmpl string, img *image.Image) {
+
+}
+
+func main() {
+    http.HandleFunc("/", IndexHandler)
+    http.ListenAndServe(":8081", nil)
 }
