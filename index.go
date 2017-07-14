@@ -6,13 +6,13 @@ import (
     "image"
     "image/jpeg"
     "io"
+    "log"
     "net/http"
     "os"
     "text/template"
-    "log"
 )
 
-var templates = template.Must(template.ParseFiles("templates/index.html"))
+var templates = template.Must(template.ParseFiles("templates/index.html", "templates/show.html"))
 /* template.ParseFiles: 別ファイルに定義したテンプレートを読み込む */
 /* template.Must: バリデーションチェック */
 
@@ -25,6 +25,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
     if err := templates.ExecuteTemplate(w, tmpl+".html", data); err != nil {
         log.Fatalln("Unable to execute template")
     }
+
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -95,5 +96,9 @@ func main() {
     http.HandleFunc("/", IndexHandler)
     http.HandleFunc("/upload", UploadHandler)
     http.HandleFunc("/show", ShowHandler)
-    http.ListenAndServe("192.168.0.69:8081", nil)
+
+    err := http.ListenAndServe("192.168.0.69:8081", nil)
+    if err != nil {
+        log.Panic(err)
+    }
 }
