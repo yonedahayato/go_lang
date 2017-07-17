@@ -21,11 +21,15 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
     renderTemplate(w, "index", data)
 }
 
+func UploadDisplayHandler(w http.ResponseWriter, r *http.Request) {
+    data := map[string]interface{}{"Title": "upload"}
+    renderTemplate(w, "upload", data)
+}
+
 func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
     if err := templates.ExecuteTemplate(w, tmpl+".html", data); err != nil {
         log.Fatalln("Unable to execute template")
     }
-
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -94,10 +98,11 @@ func writeImageWithTemplate(w http.ResponseWriter, tmpl string, img *image.Image
 
 func main() {
     http.HandleFunc("/", IndexHandler)
+    http.HandleFunc("/")
     http.HandleFunc("/upload", UploadHandler)
     http.HandleFunc("/show", ShowHandler)
 
-    err := http.ListenAndServe("192.168.0.69:8081", nil)
+    err := http.ListenAndServe(":8081", nil)
     if err != nil {
         log.Panic(err)
     }
